@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Garay | Catálogo</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">GARAY</div>
+    <div>
+      <strong>Mueblería & Electrodomésticos</strong>
+      <small>Calidad, confianza y garantía para tu hogar</small>
+    </div>
+  </div>
+  <button class="cart-btn" id="contactBtn">📲 Contactar</button>
+</header>
+
+<section class="hero">
+  <div>
+    <span class="eyebrow">CATÁLOGO DIGITAL</span>
+    <h1>Encuentra lo que necesitas para tu hogar</h1>
+    <p>Explora laptops, impresoras, audio y ventilación en un catálogo moderno y fácil de usar.</p>
+    <a href="#catalogo" class="hero-btn">Ver catálogo</a>
+  </div>
+</section>
+
+<main id="catalogo">
+  <div class="toolbar">
+    <input id="search" type="search" placeholder="Buscar producto, marca o modelo...">
+    <div class="filters" id="filters">
+      <button class="filter active" data-category="Todos">Todos</button>
+      <button class="filter" data-category="Tecnología">Tecnología</button>
+      <button class="filter" data-category="Audio">Audio</button>
+      <button class="filter" data-category="Ventilación">Ventilación</button>
+    </div>
+  </div>
+  <div id="grid" class="grid"></div>
+</main>
+
+<div class="modal hidden" id="modal">
+  <div class="modal-box">
+    <button class="close" id="close">×</button>
+    <img id="modalImg" alt="">
+    <div>
+      <span id="modalBadge" class="badge"></span>
+      <h2 id="modalTitle"></h2>
+      <p id="modalDescription"></p>
+      <button class="whatsapp" id="whatsapp">Consultar por WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <strong>Mueblería Garay</strong>
+  <p>Urb. Sebastián Barranca B-19, Santiago · Ica</p>
+  <p>956 112 245 · 966 256 990</p>
+  <p>@muebleriagarayperu</p>
+</footer>
+
+<script>
+const products = [
+  {
+    "name": "Laptop Lenovo V15 G5 IRU",
+    "category": "Tecnología",
+    "image": "laptop_gamer.png",
+    "description": "15.6\" FHD · Intel Core i3-1315U · 8GB DDR5 · 512GB SSD · Intel Graphics",
+    "badge": "Destacada"
+  },
+  {
+    "name": "Laptop Lenovo V15 G5 IRU",
+    "category": "Tecnología",
+    "image": "p8_6.png",
+    "description": "15.6\" FHD 1920×1080 · Intel Core i3-1315U · 8GB DDR5 · 256GB SSD · Intel UHD Graphics",
+    "badge": "Laptop"
+  },
+  {
+    "name": "Laptop HP 250 G10",
+    "category": "Tecnología",
+    "image": "p8_3.png",
+    "description": "15.6\" LED HD antirreflejante · Intel Core i5-1334U · 8GB DDR4 · 512GB SSD · Intel UHD Graphics",
+    "badge": "Laptop"
+  },
+  {
+    "name": "Impresora Epson EcoTank L3250",
+    "category": "Tecnología",
+    "image": "p9_3.png",
+    "description": "Multifuncional 3 en 1 · Wi‑Fi · 4 tanques de tinta · 5.760×1.440 dpi",
+    "badge": "Impresora"
+  },
+  {
+    "name": "Impresora Epson EcoTank L8050",
+    "category": "Tecnología",
+    "image": "p9_4.png",
+    "description": "EcoTank de 6 colores · Hasta 5.760×1.440 dpi · Fotos 10×15 cm · Wi‑Fi",
+    "badge": "Impresora"
+  },
+  {
+    "name": "Parlante JBL Charge 5",
+    "category": "Audio",
+    "image": "p10_3.png",
+    "description": "40W RMS · Hasta 20 h · Bluetooth 5.1 · PowerBank · IP67",
+    "badge": "JBL"
+  },
+  {
+    "name": "Parlante JBL Charge 6",
+    "category": "Audio",
+    "image": "p10_4.png",
+    "description": "45W RMS · Hasta 24 h · Bluetooth 5.4 · PowerBank · IP68",
+    "badge": "JBL"
+  },
+  {
+    "name": "Parlante JBL Flip 7",
+    "category": "Audio",
+    "image": "p10_5.png",
+    "description": "35W RMS · Hasta 16 h · Bluetooth 5.4 · IP68 · Auracast",
+    "badge": "JBL"
+  },
+  {
+    "name": "Ventilador VCM-1052",
+    "category": "Ventilación",
+    "image": "p11_3.png",
+    "description": "3 velocidades · 12 pulgadas · Compacto y portátil · Color negro",
+    "badge": "Ventilador"
+  },
+  {
+    "name": "Ventilador VCM-951",
+    "category": "Ventilación",
+    "image": "p11_4.png",
+    "description": "3 velocidades · 12 pulgadas · Compacto y portátil · Blanco",
+    "badge": "Ventilador"
+  },
+  {
+    "name": "Ventilador VCM-952",
+    "category": "Ventilación",
+    "image": "p11_5.png",
+    "description": "3 velocidades · 12 pulgadas · Compacto y portátil · Blanco",
+    "badge": "Ventilador"
+  }
+];
+const grid = document.getElementById("grid");
+const search = document.getElementById("search");
+let category = "Todos";
+
+function render() {
+  const q = search.value.toLowerCase().trim();
+  const filtered = products.filter(p =>
+    (category === "Todos" || p.category === category) &&
+    (p.name + " " + p.description + " " + p.category).toLowerCase().includes(q)
+  );
+
+  grid.innerHTML = filtered.map((p, i) => `
+    <article class="card" data-index="${products.indexOf(p)}">
+      <div class="image-wrap">
+        <span class="badge">${p.badge}</span>
+        <img src="imagenes/${p.image}" alt="${p.name}" loading="lazy">
+      </div>
+      <div class="card-body">
+        <span class="category">${p.category}</span>
+        <h3>${p.name}</h3>
+        <p>${p.description}</p>
+        <button class="details">Ver detalles</button>
+      </div>
+    </article>
+  `).join("");
+
+  document.querySelectorAll(".card").forEach(card => {
+    card.addEventListener("click", () => openModal(products[card.dataset.index]));
+  });
+
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="empty">No encontramos productos con esa búsqueda.</div>';
+  }
+}
+
+document.querySelectorAll(".filter").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".filter").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    category = btn.dataset.category;
+    render();
+  });
+});
+
+search.addEventListener("input", render);
+
+const modal = document.getElementById("modal");
+function openModal(p) {
+  document.getElementById("modalImg").src = "imagenes/" + p.image;
+  document.getElementById("modalTitle").textContent = p.name;
+  document.getElementById("modalDescription").textContent = p.description;
+  document.getElementById("modalBadge").textContent = p.badge;
+  document.getElementById("whatsapp").onclick = () => {
+    const text = encodeURIComponent("Hola, quisiera consultar por: " + p.name);
+    window.open("https://wa.me/51956112245?text=" + text, "_blank");
+  };
+  modal.classList.remove("hidden");
+}
+document.getElementById("close").onclick = () => modal.classList.add("hidden");
+modal.addEventListener("click", e => { if (e.target === modal) modal.classList.add("hidden"); });
+document.getElementById("contactBtn").onclick = () =>
+  window.open("https://wa.me/51956112245?text=Hola%2C%20quiero%20consultar%20por%20un%20producto%20del%20cat%C3%A1logo.", "_blank");
+
+render();
+</script>
+</body>
+</html>
